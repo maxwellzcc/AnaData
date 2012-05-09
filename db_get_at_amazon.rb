@@ -3,6 +3,53 @@ require 'weibo'
 require 'mysql'
 require 'parsedate'
 
+class AtAmazonCollector 
+  CountOnce=200 #每次调用api获取的微博数目
+  SleepZero = 5
+  SleepRestart = 30*60
+  SleepNextCycle = 30*60  #get all e-commerce players accounts, then sleep 
+  SleepOutRate = 3600
+  ApiInterval = 1.5
+  SEPARATOR="|"
+  Dbtable='at_amazon_detail'
+    
+  def initialize
+    load_oauth_account
+    load_mysql_info
+  end
+  
+  def load_oauth_account
+    o = YAML.load_file("config/local.yml")['oauth']
+    @atoken=[]
+    @asecret=[]
+    o.each{|item|
+     @atoken<<item['oauth_token']
+     @asecret<<item['oauth_token_secret']
+          }
+    @token_num = -1
+  end
+  
+  def  get_client
+     #@token_num 代表上次使用的token,-1是初始化的值
+     if @token_num==@atoken.size
+       sleep SleepOutRate
+     end
+     @token_num=(@token_num+1)%@atoken.size    
+     @oauth = Weibo::OAuth.new(Weibo::Config::api_key,Weibo::Config::api_secret)
+     @oauth.authorize_from_access(@atoken[@token_num],@asecret[@token_num])
+     client  = Weibo::Base.new(@oauth)
+     client
+  end
+  
+  def load_mysql_info
+     o = YAML.load_file("config/local.yml")['mysql']
+     @mysql_user = o['user']
+     @mysql_passwd = o['password'].to_s
+     @mysql_host = o['host']
+     @mysql_db = o['db']
+  end 
+  
+end
 #每个小时获取一次@亚马逊中国的微博
 
 atoken = ['8b4f224910c9b2a42f1bc5895cabe27e']
