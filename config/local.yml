@@ -14,7 +14,7 @@ oauth:
   - oauth_token: 3a6b7a22178ba91e4a78e3d99830b857 
     oauth_token_secret: 5b2f87403e80f46c634f39b9f7c972db
 
-AnaUsers:
+ECommerceAccount:
   
   #主号
   - name: 亚马逊
