@@ -47,7 +47,7 @@ class WeiboBase
   
   def load_under_analysis_users  
     @account=Hash.new
-    o = YAML.load_file("config/local.yml")['AnaUsers']
+    o = YAML.load_file("config/local.yml")['ECommerceAccount']
     o.each{|item| 
        @account[item['name']]={'id'=>item['id'],'fans'=>item['fans']}
           }
@@ -142,7 +142,12 @@ class WeiboBase
     f_out.close
   end #_get_weibo_base
    
-   
+  def get_weibo_base_from_db
+    
+  end
+  def _get_weibo_base_from_db
+    
+  end
    #获取微博的转发评论数目
    def get_weibo_base_reco 
      exit if check_date==false

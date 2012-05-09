@@ -19,14 +19,37 @@ name=URI.escape('当当网电器频道')
 # puts item['name']
 # puts item['followers_count']
 # puts item['created_at']
+def fun item
+  item[0]['url_long'] = '123'
+  item[1]='abc'
+end
+SEPARATOR="|"
+def filter_char item
+    item['user']['screen_name'].gsub!(/'/,"")
+    item['user']['screen_name'].gsub!(/\|/,"")
+    item['source'].gsub!("'","\\\'")
+    item['source'].gsub!(SEPARATOR,"")
+    item['text'].gsub!(/'/,"")
+    item['text'].gsub!(/\|/,"")
+    if item['retweeted_status']!=nil
+      str=item['retweeted_status'].to_s
+      str.gsub!(/'/,"")
+      str.gsub!(/\|/,"")
+      item['retweeted_status'] = str
+    end
+end
 
-str=URI.escape("url_short=http://t.cn/zOXeSPv&url_short=http://t.cn/zOXr89Q")
-item = client.short_url_expand({:url_short=>str})   
-puts item
-
-puts 
-#res = client.status(3415822645073229)
-
+# str=URI.escape("url_short=http://t.cn/zOXeSPv&url_short=http://t.cn/zOXr89Q")
+# item = client.short_url_expand({:url_short=>str})   
+# fun item
+# puts item
+# 
+# puts 
+item = client.status(3435375802134659)
+item['source']="SDF|EEE'E"
+puts item['source']
+filter_char item
+puts item ['source']
 # res = client.user(1804086277)
 # puts res.class
 # 
@@ -131,3 +154,4 @@ puts
 # open('text.cfg') { |f| puts f.read }
 # 
 # open('text.cfg') { |f| YAML.load(f) }
+
