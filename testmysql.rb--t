@@ -1,0 +1,14 @@
+require 'rubygems'
+# require "mysql"
+# 
+# my = Mysql::new("localhost", "cnsm", "123456", "test")
+# 
+# res = my.query("select * from users")
+# res.each do |row|
+  # col1 = row[0]
+  # col2 = row[1]
+  # puts col2
+# end
+f_out = File::open("testmysql.rb--t", "w")
+f_in = File::open("testmysql.rb")
+f_out.write(f_in.read)
