@@ -4,14 +4,15 @@ require 'mysql'
 require 'parsedate'
 
 module CommonUnity
+ 
   CountOnce=200 #每次调用api获取的微博数目
   SleepZero = 5
   SleepRestart = 30*60
-  SleepNextCycle = 30*60  #get all e-commerce players accounts, then sleep 
   SleepOutRate = 3600
   ApiInterval = 1.5
   SEPARATOR="|"
-  
+  DefaultStart='2012-1-1'
+  attr_accessor :sdate,:edate
   def load_oauth_account
     o = YAML.load_file("config/local.yml")['oauth']
     @atoken=[]
@@ -35,6 +36,8 @@ module CommonUnity
      client
   end
   
+
+  
   def load_mysql_info
      o = YAML.load_file("config/local.yml")['mysql']
      @mysql_user = o['user']
@@ -42,6 +45,11 @@ module CommonUnity
      @mysql_host = o['host']
      @mysql_db = o['db']
   end 
+  
+  def get_sql_client
+    my = Mysql.connect(@mysql_host, @mysql_user, @mysql_passwd,@mysql_db)
+    my
+  end
   
   def load_ecommerce
      @account=Hash.new

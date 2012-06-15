@@ -17,7 +17,7 @@ oauth:
 ECommerceAccount:
   
   #主号
-  - name: 亚马逊
+  - name: 亚马逊中国
     id: 1732523361
     fans: 12
     
@@ -25,15 +25,15 @@ ECommerceAccount:
     id: 1768198384
     fans: 129
     
-  - name: 京东
+  - name: 京东商城
     id: 1717871843
     fans: 120
       
-  - name: 当当
+  - name: 当当网
     id: 1647263235
     fans: 19
       
-  - name: durex
+  - name: 杜蕾斯官方微博
     id: 1942473263
     fans: 37
    

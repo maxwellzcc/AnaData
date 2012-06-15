@@ -19,7 +19,7 @@ class LengthAna
         # _analyse_length(name)
             # }
       account=['亚马逊中国','天猫','京东商城','当当网','杜蕾斯官方微博']
-       account=['亚马逊中国']
+      # account=['亚马逊中国']
       account.each{|name|
       _analyse_length(name)
           }
@@ -36,14 +36,13 @@ class LengthAna
     t=0
     while row=res.fetch_row
       text=row[0]
-      text=text.strip
       re=row[1].to_i
       co=row[2].to_i
-      len = text.split(//u).length #获取中文长度
+      len = get_length text #获取中文长度
       if maxlen<len
         maxlen=len
       end
-#       
+
       if ha[len]==nil
         ha[len]=[1,re,co]
       else
@@ -53,6 +52,7 @@ class LengthAna
       end
     end#while
 
+
     
     #每个长度分析
     l_a=[]
@@ -60,7 +60,7 @@ class LengthAna
     re_a=[]
     co_a=[]
     
-    0.upto(249){|i|
+    0.upto(150){|i|
       l_a<<i
     if ha.has_key?(i)
       s_a<<ha[i][0]
@@ -81,18 +81,31 @@ class LengthAna
    s_a=[0,0,0,0,0]
    re_a=[0,0,0,0,0]
    co_a=[0,0,0,0,0]
-   0.upto(249){|i|
+   0.upto(150){|i|
      if ha.has_key?(i)
-       s_a[i/50]+=ha[i][0]
-      re_a[i/50]+=ha[i][1]
-      co_a[i/50]+=ha[i][2]
+       s_a[i/30]+=ha[i][0]
+      re_a[i/30]+=ha[i][1]
+      co_a[i/30]+=ha[i][2]
      end
          }
    puts s_a*SEPARATOR
    puts re_a*SEPARATOR
    puts co_a*SEPARATOR
-   
+   puts maxlen
   end #_analyse_length
+  
+  
+  def get_length (text)
+    i=0
+    len = 0
+    while i<text.length
+      if text[i]<128 
+        len+=1
+      end
+     i+=1
+    end
+    return text.split(//u).length-len/2
+  end
 end #LengthAna
 x=LengthAna.new
 x.sdate='2012-1-1'

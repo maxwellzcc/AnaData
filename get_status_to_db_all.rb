@@ -10,15 +10,17 @@ class StatusesCollector
     load_mysql_info
     load_ecommerce
     @dbtable='statuses_all'
-    @log_file = File.new("get_statuses_all.log","a")
+    @log_file = File.new("data/get_statuses_all.log","a")
   end
   
   def get_statuses_all
-    @account.each{|uscreenname,uid|
+    while true
+      @account.each{|uscreenname,uid|
       _get_statues_all(uscreenname,uid)
-          }
-    puts "now all e-commerce player's statuses are new, sleep #{SleepNextCycle}"
-    sleep SleepNextCycle
+              }
+     puts "now all e-commerce player's statuses are new, sleep #{SleepRestart}"
+     sleep SleepRestart
+    end
   end
   
 
@@ -26,13 +28,13 @@ class StatusesCollector
     puts "#{Time.now}--begin to get statuses of #{uscreenname}"
     
     #get newest status's created_at
-    my = Mysql.connect(@mysql_host,@mysql_user ,@mysql_passwd ,@mysql_db)
+    my = get_sql_client
     res = my.query("select created_at from "+@dbtable+" where uid= "+uid+" order by created_at desc limit 1;")
     row = res.fetch_row
     if row !=nil and row[0]!=nil
       since_created_at = Time.mktime(*ParseDate.parsedate(row[0]))
     else
-      since_created_at = Time.mktime(*ParseDate.parsedate('2012-1-1'))
+      since_created_at = Time.mktime(*ParseDate.parsedate(DefaultStart))
     end
     
     client = get_client
@@ -66,7 +68,9 @@ class StatusesCollector
             max_id = item['id']
             max_created_at=Time.mktime(*ParseDate.parsedate(item['created_at'])) 
             created_at=max_created_at.strftime("%Y-%m-%d %H:%M:%S")
-              
+            if (max_created_at <=> since_created_at) <= 0 #if the db is newest
+              break
+            end  
             #remove the char '
             filter_char item
         
@@ -88,6 +92,7 @@ class StatusesCollector
         sleep ApiInterval
         
         if (max_created_at <=> since_created_at) <= 0 #if the db is newest
+           my.close
            break
         end  
       end # while
